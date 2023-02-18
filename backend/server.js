@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 
 // routes
 app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to the app' })
+  res.json({ message: 'Welcome to the app :)' })
 })
 
 // a touch all routs from workout.js
