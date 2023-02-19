@@ -1,22 +1,25 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useWorkoutsContext } from '../hooks/useWorkoutContext'
 import { useAuthContext } from '../hooks/useAuthContext'
 
-function WorkoutForm() {
+const WorkoutForm = () => {
+  const { dispatch } = useWorkoutsContext()
+  const { user } = useAuthContext()
+
   const [title, setTitle] = useState('')
   const [load, setLoad] = useState('')
   const [reps, setReps] = useState('')
   const [error, setError] = useState(null)
-  const { dispatch } = useWorkoutsContext()
   const [emptyFields, setEmptyFields] = useState([])
-  const { user } = useAuthContext()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
     if (!user) {
       setError('You must be logged in')
       return
     }
+
     const workout = { title, load, reps }
 
     const response = await fetch('/api/workouts', {
@@ -33,15 +36,13 @@ function WorkoutForm() {
       setError(json.error)
       setEmptyFields(json.emptyFields)
     }
-
     if (response.ok) {
-      setError(null)
       setTitle('')
       setLoad('')
       setReps('')
+      setError(null)
       setEmptyFields([])
-      console.log('new workout added:', json)
-      dispatch({ type: 'CREATE_WORKOUTS', payload: json })
+      dispatch({ type: 'CREATE_WORKOUT', payload: json })
     }
   }
 
@@ -65,7 +66,7 @@ function WorkoutForm() {
         className={emptyFields.includes('load') ? 'error' : ''}
       />
 
-      <label>Number of Reps:</label>
+      <label>Reps:</label>
       <input
         type='number'
         onChange={(e) => setReps(e.target.value)}
